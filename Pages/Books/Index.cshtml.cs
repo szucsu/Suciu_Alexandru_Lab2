@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Suciu_Alexandru_Lab2.Data;
+using Suciu_Alexandru_Lab2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Suciu_Alexandru_Lab2.Data;
-using Suciu_Alexandru_Lab2.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Suciu_Alexandru_Lab2.Pages.Books
 {
@@ -19,11 +19,36 @@ namespace Suciu_Alexandru_Lab2.Pages.Books
             _context = context;
         }
 
-        public IList<Book> Book { get;set; } = default!;
+        public IList<Book> Book { get; set; } = default!;
+        public BookData BookD { get; set; } = default!;
+        public int BookID { get; set; }
+        public int CategoryID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id, int? categoryID)
         {
-            Book = await _context.Book.Include(b => b.Publisher).ToListAsync();
+            BookD = new BookData();
+
+            BookD.Books = await _context.Book
+                .Include(b => b.Publisher)
+                .Include(b => b.Author)
+                .Include(b => b.BookCategories)
+                .ThenInclude(b => b.Category)
+                .AsNoTracking()
+                .OrderBy(b => b.Title)
+                .ToListAsync();
+
+            if (id != null)
+            {
+                BookID = id.Value;
+                Book book = BookD.Books
+                    .Where(i => i.ID == id.Value)
+                    .FirstOrDefault()!;
+                
+                if (book != null)
+                {
+                    BookD.Categories = book.BookCategories?.Select(s => s.Category) ?? new List<Category>();
+                }
+            }
         }
     }
 }
