@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Suciu_Alexandru_Lab2.Models
 {
@@ -8,10 +9,13 @@ namespace Suciu_Alexandru_Lab2.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        [NotMapped]
+        [Display(Name = "Full Name")]
         public string FullName
         {
-            get { return FirstName + " " + LastName; }
+            get
+            {
+                return FirstName + " " + LastName;
+            }
         }
 
         public ICollection<Book>? Books { get; set; }
