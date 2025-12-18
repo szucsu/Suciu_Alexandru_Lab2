@@ -1,5 +1,6 @@
 ﻿using Suciu_Alexandru_Lab2.Data;
 using Suciu_Alexandru_Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Suciu_Alexandru_Lab2.Pages.Books
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : BookCategoriesPageModel
     {
         private readonly Suciu_Alexandru_Lab2.Data.Suciu_Alexandru_Lab2Context _context;
@@ -32,7 +34,6 @@ namespace Suciu_Alexandru_Lab2.Pages.Books
         [BindProperty]
         public Book Book { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
         {
             var newBook = new Book();
@@ -53,6 +54,5 @@ namespace Suciu_Alexandru_Lab2.Pages.Books
             await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
-
     }
 }
